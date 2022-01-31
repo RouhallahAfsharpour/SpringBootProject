@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<div>
+    <h2>Register new User</h2>
+    <div>
+        <h4><a href="/">Home Page</a></h4>
+    </div>
+
+    <form name="myForm" th:action="@{/addNewUserToList}" method="get">
+        <input type="text" name="firstNameUser" id="firstNameUser" size="30" th:value="${firstNameUser}"/>
+        <input id="submit" type="submit" value="Register" />
+    </form>
+
+<!--
+    <h3>All users registered:  <span th:text="'(Count: ' + ${userCount} + ')'"></span></h3>
+
+    <table>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.firstName}"></td>
+            <td th:text="${user.lastName}"></td>
+            <td th:text="${user.email}"></td>
+            <td th:text="${user.password}"></td>
+        </tr>
+        </tbody>
+    </table>
+-->
+
+</div>
+</html>
