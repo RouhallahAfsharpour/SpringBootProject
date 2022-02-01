@@ -22,13 +22,11 @@ public class UserController {
 
     @GetMapping("/addUser/{firstName}")
     public void addNewUser(@PathVariable("firstName") String firstName){
-        System.out.println("first name: "+firstName);
         projectService.addNewUser(firstName,"smith","smith@yahoo.com","1234");
     }
 
     @GetMapping("/allUsersList")
     public List<User> allUsersList(){
-        //System.out.println(projectService.getAllUsers().toString());
         return projectService.getAllUsers();
     }
 }

@@ -31,7 +31,7 @@ public class ProjectController {
     public String getListOfUsers(@RequestParam(value = "firstNameUser", required = false) String firstName, HttpServletRequest request, Model model) {
 
         restTemplate = new RestTemplate();
-        System.out.println("f n: "+firstName);
+
         String itemResourceUrl = "http://localhost:" + request.getLocalPort() + "/addUser/" + firstName;
 
         List<User> response = restTemplate.getForObject(
@@ -52,8 +52,6 @@ public class ProjectController {
                 userResourceUrl,
                 List.class
         );
-
-        //System.out.println(responseUsers.toString());
 
         model.addAttribute("users", responseUsers);
         model.addAttribute("userCount", responseUsers.size());

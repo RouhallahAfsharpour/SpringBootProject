@@ -11,8 +11,6 @@ public class MainRepository {
 
     public static void addUser(String firstName, String lastName, String email, String password){
         allUsers.add(new User(firstName, lastName, email, password));
-        System.out.println(allUsers.size());
-        System.out.println(firstName);
     }
 
     public static List<User> getAllUsers(){
