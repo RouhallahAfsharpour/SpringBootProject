@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
+
 <div>
     <h2>Register new User</h2>
     <div>
@@ -7,24 +8,20 @@
     </div>
 
     <form name="myForm" th:action="@{/addNewUserToList}" method="get">
-        <input type="text" name="firstNameUser" id="firstNameUser" size="30" th:value="${firstNameUser}"/>
-        <input id="submit" type="submit" value="Register" />
+        <label for="firstNameUser">First name: </label>
+        <input type="text" name="firstNameUser" id="firstNameUser" size="30" th:value="${firstNameUser}" required/><br/>
+        <br/>
+        <label for="lastNameUser">Last name:  </label>
+        <input type="text" name="lastNameUser" id="lastNameUser" size="30" th:value="${lastNameUser}" required/><br/>
+        <br/>
+        <label for="emailUser">E-Mail: &nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <input type="text" name="emailUser" id="emailUser" size="30" th:value="${emailUser}" required/><br/>
+        <br/>
+        <label for="passwordUser">Password:&nbsp;</label>
+        <input type="text" name="passwordUser" id="passwordUser" size="30" th:value="${passwordUser}" required/><br/>
+        <br/>
+        <input id="submit" type="submit" size="40" value="Register as new user" /><br/>
     </form>
-
-<!--
-    <h3>All users registered:  <span th:text="'(Count: ' + ${userCount} + ')'"></span></h3>
-
-    <table>
-        <tbody>
-        <tr th:each="user : ${users}">
-            <td th:text="${user.firstName}"></td>
-            <td th:text="${user.lastName}"></td>
-            <td th:text="${user.email}"></td>
-            <td th:text="${user.password}"></td>
-        </tr>
-        </tbody>
-    </table>
--->
 
 </div>
 </html>

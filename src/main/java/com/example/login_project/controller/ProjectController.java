@@ -28,11 +28,16 @@ public class ProjectController {
     }
 
     @RequestMapping(value = "/addNewUserToList", method = RequestMethod.GET)
-    public String getListOfUsers(@RequestParam(value = "firstNameUser", required = false) String firstName, HttpServletRequest request, Model model) {
+    public String getListOfUsers(@RequestParam(value = "firstNameUser", required = false) String firstName,
+                                 @RequestParam(value = "lastNameUser", required = false) String lastName,
+                                 @RequestParam(value = "emailUser", required = false) String email,
+                                 @RequestParam(value = "passwordUser", required = false) String password,
+                                 HttpServletRequest request, Model model) {
 
         restTemplate = new RestTemplate();
 
-        String itemResourceUrl = "http://localhost:" + request.getLocalPort() + "/addUser/" + firstName;
+        String infoString =firstName+"&&"+lastName+"&&"+email+"&&"+password;
+        String itemResourceUrl = "http://localhost:" + request.getLocalPort() + "/addUser/" + infoString;
 
         List<User> response = restTemplate.getForObject(
                 itemResourceUrl,

@@ -20,9 +20,11 @@ public class UserController {
         this.projectService = projectService;
     }
 
-    @GetMapping("/addUser/{firstName}")
-    public void addNewUser(@PathVariable("firstName") String firstName){
-        projectService.addNewUser(firstName,"smith","smith@yahoo.com","1234");
+    @GetMapping("/addUser/{infoString}")
+    public void addNewUser(@PathVariable("infoString") String infoString){
+        String[] info = infoString.split("&&");
+        System.out.println(info[0]+info[1]+info[2]+info[3]);
+        projectService.addNewUser(info[0],info[1],info[2],info[3]);
     }
 
     @GetMapping("/allUsersList")
