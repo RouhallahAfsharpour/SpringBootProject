@@ -20,12 +20,14 @@
         <tr>
             <td>First name</td>
             <td>Last name</td>
+            <td>Gender</td>
             <td>E-Mail</td>
             <td>Telephone</td>
         </tr>
         <tr th:each="user : ${users}">
             <td th:text="${user.firstName}"></td>
             <td th:text="${user.lastName}"></td>
+            <td th:text="${user.gender}"></td>
             <td th:text="${user.email}"></td>
             <td th:text="${user.tel}"></td>
         </tr>

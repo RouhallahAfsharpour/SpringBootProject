@@ -9,8 +9,8 @@ import java.util.List;
 @Service
 public class UserService {
 
-    public static void addNewUser(String firstName, String lastName, String email, String tel){
-        MainRepository.addUser(firstName, lastName, email, tel);
+    public static void addNewUser(String firstName, String lastName, String email, String tel, String gender){
+        MainRepository.addUser(firstName, lastName, email, tel, gender);
     }
 
     public static List<User> getAllUsers(){

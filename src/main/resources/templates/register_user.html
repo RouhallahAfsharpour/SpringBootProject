@@ -13,6 +13,12 @@
         <label for="lastName">Last name:  </label>
         <input type="text" name="lastName" id="lastName" size="30" th:value="${lastName}" required/><br/>
         <br/>
+        <label>Gender: &nbsp; &nbsp;</label>
+        <input type="radio" name="gender" th:value="Male"> Male
+        <input type="radio" name="gender" th:value="Female"> Female
+        <input type="radio" name="gender" th:value="Other"> Other
+        <br/>
+        <br/>
         <label for="email">E-Mail: &nbsp;&nbsp;&nbsp;&nbsp;</label>
         <input type="text" name="email" id="email" size="30" th:value="${email}" required/><br/>
         <br/>

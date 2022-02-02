@@ -38,8 +38,9 @@ public class UserController {
     public String createUser(@RequestParam(value = "firstName", required = false) String firstName,
                              @RequestParam(value = "lastName", required = false) String lastName,
                              @RequestParam(value = "email", required = false) String email,
-                             @RequestParam(value = "tel", required = false) String tel) {
-        userService.addNewUser(firstName, lastName, email, tel);
+                             @RequestParam(value = "tel", required = false) String tel,
+                             @RequestParam(value = "gender", required = false) String gender) {
+        userService.addNewUser(firstName, lastName, email, tel, gender);
         return "register_user.html";
     }
 }
