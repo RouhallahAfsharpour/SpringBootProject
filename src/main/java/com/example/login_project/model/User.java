@@ -4,17 +4,16 @@ public class User {
     private String firstName ="";
     private String lastName ="";
     private String email ="";
-    private String password ="";
+    private String tel ="";
 
-    public User(String firstName, String lastName, String email, String password) {
+    public User(String firstName, String lastName, String email, String tel) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.password = password;
+        this.tel = tel;
     }
 
     public User() {
-
     }
 
     public String getFirstName() {
@@ -29,17 +28,8 @@ public class User {
         return email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getTel() {
+        return tel;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "firstName='" + firstName + '\'' +
-                ", LastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
 }
