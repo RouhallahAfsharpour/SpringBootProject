@@ -1,10 +1,10 @@
 package com.example.login_project.model;
 
 public class User {
-    public String firstName ="";
-    public String lastName ="";
-    public String email ="";
-    public String password ="";
+    private String firstName ="";
+    private String lastName ="";
+    private String email ="";
+    private String password ="";
 
     public User(String firstName, String lastName, String email, String password) {
         this.firstName = firstName;
@@ -15,6 +15,22 @@ public class User {
 
     public User() {
 
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     @Override

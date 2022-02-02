@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ProjectService {
+public class UserService {
 
     public static void addNewUser(String firstName, String lastName, String email, String password){
         MainRepository.addUser(firstName, lastName, email, password);

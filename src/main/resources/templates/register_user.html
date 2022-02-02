@@ -7,18 +7,18 @@
         <h4><a href="/">Home Page</a></h4>
     </div>
 
-    <form name="myForm" th:action="@{/addNewUserToList}" method="get">
-        <label for="firstNameUser">First name: </label>
-        <input type="text" name="firstNameUser" id="firstNameUser" size="30" th:value="${firstNameUser}" required/><br/>
+    <form name="myForm" th:action="@{/addNewUserToList}" method="post">
+        <label for="firstName">First name: </label>
+        <input type="text" name="firstName" id="firstName" size="30" th:value="${firstName}" required/><br/>
         <br/>
-        <label for="lastNameUser">Last name:  </label>
-        <input type="text" name="lastNameUser" id="lastNameUser" size="30" th:value="${lastNameUser}" required/><br/>
+        <label for="lastName">Last name:  </label>
+        <input type="text" name="lastName" id="lastName" size="30" th:value="${lastName}" required/><br/>
         <br/>
-        <label for="emailUser">E-Mail: &nbsp;&nbsp;&nbsp;&nbsp;</label>
-        <input type="text" name="emailUser" id="emailUser" size="30" th:value="${emailUser}" required/><br/>
+        <label for="email">E-Mail: &nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <input type="text" name="email" id="email" size="30" th:value="${email}" required/><br/>
         <br/>
-        <label for="passwordUser">Password:&nbsp;</label>
-        <input type="text" name="passwordUser" id="passwordUser" size="30" th:value="${passwordUser}" required/><br/>
+        <label for="password">Password:&nbsp;</label>
+        <input type="text" name="password" id="password" size="30" th:value="${password}" required/><br/>
         <br/>
         <input id="submit" type="submit" size="40" value="Register as new user" /><br/>
     </form>
