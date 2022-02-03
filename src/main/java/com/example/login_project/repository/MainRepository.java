@@ -34,7 +34,6 @@ public class MainRepository {
 
     //deleteUser
     public static void deleteEmployee(String email){
-        System.out.println("Repository: "+email);
 
         String jdbcURL = "jdbc:mysql://localhost:3306/employees";
         String username = "root";
