@@ -4,6 +4,8 @@ import com.example.login_project.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.sql.SQLException;
 import java.util.List;
 
 @Controller
@@ -29,6 +31,14 @@ public class UserController {
     @RequestMapping(value = "/listOfAllUsers", method = RequestMethod.GET)
     public String getUsers(Model model) {
         List<User> users = userService.getAllUsers();
+        model.addAttribute("users", users);
+        model.addAttribute("userCount", users.size());
+        return "all_users.html";
+    }
+
+    @RequestMapping(value = "/listOfAllUsersDB", method = RequestMethod.GET)
+    public String getUsersDB(Model model) throws SQLException {
+        List<User> users = userService.getAllUsersDB();
         model.addAttribute("users", users);
         model.addAttribute("userCount", users.size());
         return "all_users.html";
