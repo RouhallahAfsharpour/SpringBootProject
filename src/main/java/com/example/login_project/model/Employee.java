@@ -1,13 +1,13 @@
 package com.example.login_project.model;
 
-public class User {
+public class Employee {
     private String firstName ="";
     private String lastName ="";
     private String email ="";
     private String tel ="";
     private String gender ="";
 
-    public User(String firstName, String lastName, String email, String tel, String gender) {
+    public Employee(String firstName, String lastName, String gender, String email, String tel) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -15,7 +15,7 @@ public class User {
         this.gender = gender;
     }
 
-    public User() {
+    public Employee() {
     }
 
     public String getFirstName() {

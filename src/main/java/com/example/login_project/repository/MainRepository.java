@@ -1,16 +1,16 @@
 package com.example.login_project.repository;
-import com.example.login_project.model.User;
+import com.example.login_project.model.Employee;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainRepository {
-    public static List<User> allUsers = new ArrayList<User>();
-    public static List<User> allUsersDB = new ArrayList<User>();
+    public static List<Employee> allEmployees = new ArrayList<Employee>();
+    public static List<Employee> allEmployeesDB = new ArrayList<Employee>();
 
-    public static void addUser(String firstName, String lastName, String email, String tel, String gender){
-        allUsers.add(new User(firstName, lastName, email, tel, gender));
+    public static void addEmployee(String firstName, String lastName, String gender, String email, String tel){
+        allEmployees.add(new Employee(firstName, lastName, gender, email, tel));
 
         String jdbcURL = "jdbc:mysql://localhost:3306/employees";
         String username = "root";
@@ -32,14 +32,34 @@ public class MainRepository {
         }
     }
 
-    public static List<User> getAllUsers(){
-        List<User> users = allUsers;
-        return users;
+    //deleteUser
+    public static void deleteEmployee(String email){
+        System.out.println("Repository: "+email);
+
+        String jdbcURL = "jdbc:mysql://localhost:3306/employees";
+        String username = "root";
+        String password = "1234";
+
+        try(Connection connection = DriverManager.getConnection(jdbcURL,username,password);
+            Statement stmt = connection.createStatement();
+        ) {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM workers WHERE email = ?");
+            ps.setString(1,email);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static List<User> getAllUsersDB() throws SQLException {
+    public static List<Employee> getAllEmployees(){
+        List<Employee> employees = allEmployees;
+        return employees;
+    }
 
-        allUsersDB.clear();
+    public static List<Employee> getAllEmployeesDB() throws SQLException {
+
+        allEmployeesDB.clear();
 
         String jdbcURL = "jdbc:mysql://localhost:3306/employees";
         String username = "root";
@@ -51,7 +71,7 @@ public class MainRepository {
             ResultSet rs = stmt.executeQuery(QUERY);
         ) {
             while(rs.next()){
-                allUsersDB.add(new User(
+                allEmployeesDB.add(new Employee(
                         rs.getString("first_name"),
                         rs.getString("last_name"),
                         rs.getString("gender"),
@@ -62,7 +82,7 @@ public class MainRepository {
             e.printStackTrace();
         }
 
-        List<User> usersFromDB = allUsersDB;
-        return usersFromDB;
+        List<Employee> EmployeesFromDB = allEmployeesDB;
+        return EmployeesFromDB;
     }
 }

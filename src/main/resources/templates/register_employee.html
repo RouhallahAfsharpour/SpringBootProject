@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <div>
-    <h2>Register new User</h2>
+    <h2>Register a new Employee</h2>
     <div>
         <h4><a href="/">Home Page</a></h4>
     </div>
 
-    <form name="myForm" th:action="@{/addNewUserToList}" method="post">
+    <form name="myForm" th:action="@{/addNewEmployeeToList}" method="post">
         <label for="firstName">First name: </label>
         <input type="text" name="firstName" id="firstName" size="30" th:value="${firstName}" required/><br/>
         <br/>
@@ -25,7 +25,7 @@
         <label for="tel">Telephone:</label>
         <input type="text" name="tel" id="tel" size="30" th:value="${tel}" required/><br/>
         <br/>
-        <input id="submit" type="submit" size="40" value="Register as new user" /><br/>
+        <input id="submit" type="submit" size="40" value="Register a new Employee" /><br/>
     </form>
 
 </div>
