@@ -224,10 +224,9 @@ public class MainController {
     }
 
     //deleteQuestionFromQuestionnaire
-    @GetMapping("/deleteQuestionFromQuestionnaire")
+    @PostMapping(value = "/deleteQuestionFromQuestionnaire")
     public String deleteQuestionQuestionnaire(@RequestParam(value = "nameOfQuestionnaire", required = false) String questionnaire,
                                               @RequestParam(value = "idQuestion", required = false) int questionID, Model model) throws SQLException {
-        System.out.println("qn: "+questionnaire+" "+questionID);
         mainService.deleteQuestionFromQuestionnaire(questionnaire,questionID);
 
         List<QuestionBank> questions = mainService.getAllQuestions(questionnaire);

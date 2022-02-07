@@ -25,7 +25,6 @@
             <td>Option 3</td>
             <td>Option 4</td>
             <td>Answer</td>
-            <td>Delete</td>
             <td>Edit Question</td>
             <td>Delete Question</td>
         </tr>
@@ -41,10 +40,9 @@
             <td><input type="radio" th:name="ans" th:value="3" onclick="submitForm()"> 3- <a th:text="${question.option3}"></a></td>
             <td><input type="radio" th:name="ans" th:value="4" onclick="submitForm()"> 4- <a th:text="${question.option4}"></a></td>
             <td th:text="${question.answer}"></td>
-            <td ><a th:text="'Delete'" th:href="@{/deleteQuestionFromQuestionnaire(questionId=${id})}"></a></td>
             <td><input id="submit" type="submit" value="Edit Question" /><br/></td>
             </form>
-            <form id="${question.id}+D"  th:action="@{/deleteQuestionFromQuestionnaire}" method="post">
+            <form id="f"  th:action="@{/deleteQuestionFromQuestionnaire}" method="post">
                 <input type="hidden" id="idQuestion" name="idQuestion" th:value=${question.id}>
                 <input type="hidden" id="nameOfQuestionnaire" name="nameOfQuestionnaire" th:value=${questionnaireName}>
                 <td><input id="Delete" type="submit" value="Delete Question" /><br/></td>
