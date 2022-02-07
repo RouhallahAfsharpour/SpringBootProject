@@ -10,7 +10,9 @@ public class MainRepository {
     public static List<Employee> allEmployees = new ArrayList<>();
     public static List<Employee> allEmployeesDB = new ArrayList<>();
     public static List<QuestionBank> allQuestions = new ArrayList<>();
+    public static List<String> QuestionnaireTableNames = new ArrayList<>();
     public static String jdbcURL = "jdbc:mysql://localhost:3306/employees";
+    public static String jdbcURLQuestionnaires = "jdbc:mysql://localhost:3306/questionnaires";
     public static String username = "root";
     public static String password = "1234";
 
@@ -94,13 +96,67 @@ public class MainRepository {
         return EmployeesFromDB;
     }
 
-    public static List<QuestionBank> getAllQuestions() throws SQLException {
+    public static List<String> getAllQuestionnaireTableNames(){
+        QuestionnaireTableNames.clear();
+        try (Connection connection = DriverManager.getConnection(jdbcURLQuestionnaires,username,password);){
+            DatabaseMetaData dbmd = connection.getMetaData();
+            String[] types = {"TABLE"};
+            ResultSet rs = dbmd.getTables(null, null, "questionnaire%", types);
+            while (rs.next()) {
+                QuestionnaireTableNames.add(rs.getString("TABLE_NAME"));
+            }
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return QuestionnaireTableNames;
+    }
+
+    public static void createNewQuestionnaireInDB(String questionnaireName) throws SQLException {
+        try(Connection connection = DriverManager.getConnection(jdbcURLQuestionnaires,username,password);
+            Statement stmt = connection.createStatement();
+        ) {
+            String sqlCreate = "CREATE TABLE IF NOT EXISTS " + "questionnaire_"+questionnaireName
+                    + " (id INT(11) NOT NULL AUTO_INCREMENT,"
+                    + "question VARCHAR(450),"
+                    + "option1 VARCHAR(50),"
+                    + "option2 VARCHAR(50),"
+                    + "option3 VARCHAR(50),"
+                    + "option4 VARCHAR(50),"
+                    + "answer INTEGER,PRIMARY KEY (id))";
+
+            stmt.execute(sqlCreate);
+        }
+    }
+
+    public static void addNewQuestion(String questionnaire ,String question, String option1, String option2, String option3, String option4, String answer){
+        QuestionBank newQuestion = new QuestionBank(question,option1,option2,option3,option4,answer);
+
+        try(Connection connection = DriverManager.getConnection(jdbcURLQuestionnaires,username,password);
+            Statement stmt = connection.createStatement();
+        ) {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO "+questionnaire+"(question, option1, option2, option3, option4, answer)values(?,?,?,?,?,?);");
+            ps.setString(1,question);
+            ps.setString(2,option1);
+            ps.setString(3,option2);
+            ps.setString(4,option3);
+            ps.setString(5,option4);
+            ps.setString(6,answer);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static List<QuestionBank> getAllQuestions(String questionnaireName) throws SQLException {
 
         allQuestions.clear();
 
-        try(Connection connection = DriverManager.getConnection(jdbcURL,username,password);
+        try(Connection connection = DriverManager.getConnection(jdbcURLQuestionnaires,username,password);
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT id, question, option1, option2, option3, option4, answer FROM questions");
+            ResultSet rs = stmt.executeQuery("SELECT id, question, option1, option2, option3, option4, answer FROM "+questionnaireName);
         ) {
             while(rs.next()){
                 allQuestions.add(new QuestionBank(
@@ -153,5 +209,78 @@ public class MainRepository {
         allQuestionsUp.removeIf(obj -> obj.getId() == questionID);
         System.out.println("s"+allQuestionsUp.size());
         allQuestions=allQuestionsUp;
+    }
+
+
+    //delete questionnaire
+    public static void deleteQuestionnaire(String questionnaire){
+        try(Connection connection = DriverManager.getConnection(jdbcURLQuestionnaires,username,password);
+            Statement stmt = connection.createStatement();
+        ) {
+            String sql="DROP TABLE "+questionnaire;
+            stmt.executeUpdate(sql);
+            //PreparedStatement ps = connection.prepareStatement("DROP TABLE "+questionnaire);
+            //ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //getQuestionForEdit
+    public static QuestionBank getQuestionForEdit(String questionnaireName,int questionID){
+        QuestionBank questionForEdit= new QuestionBank();
+
+        try(Connection connection = DriverManager.getConnection(jdbcURLQuestionnaires,username,password);
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT id, question, option1, option2, option3, option4, answer FROM "+questionnaireName+" WHERE id="+questionID);
+
+        ) {
+            while(rs.next()) {
+
+            questionForEdit= new QuestionBank(
+                        rs.getInt("id"),
+                        rs.getString("question"),
+                        rs.getString("option1"),
+                        rs.getString("option2"),
+                        rs.getString("option3"),
+                        rs.getString("option4"),
+                        Integer.toString(rs.getInt("answer")));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return questionForEdit;
+    }
+
+    public static void editThisQuestion(String questionnaire, int questionID,String question, String option1, String option2, String option3, String option4, String answer){
+
+        //System.out.println("before update: "+questionnaire+questionID+question+option1+option2+option3+option4+answer);
+        try(Connection connection = DriverManager.getConnection(jdbcURLQuestionnaires,username,password);
+            Statement stmt = connection.createStatement();
+        ) {
+            String sql="UPDATE "+questionnaire+" SET question = '"+question+"', option1 = '"+option1+
+                    "', option2 = '"+option2+"', option3 = '"+option3+
+                    "', option4 = '"+option4+"', answer = '"+answer+
+                    "' WHERE id= "+questionID;
+            System.out.println(sql);
+            stmt.executeUpdate(sql);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void deleteQuestionFromQuestionnaire(String questionnaireName,int questionID){
+        try(Connection connection = DriverManager.getConnection(jdbcURLQuestionnaires,username,password);
+            Statement stmt = connection.createStatement();
+        ) {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM "+questionnaireName+" WHERE id = ?");
+            ps.setInt(1,questionID);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

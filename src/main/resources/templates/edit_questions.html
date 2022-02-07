@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<style>
+      table,
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+  </style>
+<div>
+    <h2>Edit Questions</h2>
+    <div>
+        <h4><a href="/">Home Page</a></h4>
+    </div>
+    <h3>Number of questions:  <span th:text="${questionCount}"></span></h3>
+    <table>
+        <tbody>
+        <tr>
+            <td>Nr.</td>
+            <td>Question</td>
+            <td>Option 1</td>
+            <td>Option 2</td>
+            <td>Option 3</td>
+            <td>Option 4</td>
+            <td>Answer</td>
+            <td>Delete</td>
+            <td>Edit Question</td>
+            <td>Delete Question</td>
+        </tr>
+
+        <tr th:each="question : ${questions}">
+            <form id="${question.id}"  th:action="@{/EditAQuestionOfQuestionnaire}" method="post">
+            <input type="hidden" id="id" name="id" th:value=${question.id}>
+            <input type="hidden" questionnaireName="id" name="questionnaireName" th:value=${questionnaireName}>
+            <td><a th:text="${question.id}"></a></td>
+            <td th:text="${question.question}"></td>
+            <td><input type="radio" th:name="ans" th:value="1" onclick="submitForm()"> 1- <a th:text="${question.option1}"></a></td>
+            <td><input type="radio" th:name="ans" th:value="2" onclick="submitForm()"> 2- <a th:text="${question.option2}"></a></td>
+            <td><input type="radio" th:name="ans" th:value="3" onclick="submitForm()"> 3- <a th:text="${question.option3}"></a></td>
+            <td><input type="radio" th:name="ans" th:value="4" onclick="submitForm()"> 4- <a th:text="${question.option4}"></a></td>
+            <td th:text="${question.answer}"></td>
+            <td ><a th:text="'Delete'" th:href="@{/deleteQuestionFromQuestionnaire(questionId=${id})}"></a></td>
+            <td><input id="submit" type="submit" value="Edit Question" /><br/></td>
+            </form>
+            <form id="${question.id}+D"  th:action="@{/deleteQuestionFromQuestionnaire}" method="post">
+                <input type="hidden" id="idQuestion" name="idQuestion" th:value=${question.id}>
+                <input type="hidden" id="nameOfQuestionnaire" name="nameOfQuestionnaire" th:value=${questionnaireName}>
+                <td><input id="Delete" type="submit" value="Delete Question" /><br/></td>
+            </form>
+        </tr>
+
+
+        </tbody>
+    </table>
+</div>
+</html>

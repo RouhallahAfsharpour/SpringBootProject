@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<style>
+      table,
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+  </style>
+<div>
+    <h2>List of questionnaires</h2>
+    <div>
+        <h4><a href="/">Home Page</a></h4>
+    </div>
+    <h3>&nbsp;<span th:text="${message}"></span></h3>
+    <br/>
+    <h3>Number of questionnaires:  <span th:text="${questionnaireCount}"></span></h3>
+    <table>
+        <tbody>
+        <tr>
+            <td>Questionnaires</td>
+            <td>Add Question</td>
+        </tr>
+
+        <tr th:each="questionnaire : ${questionnaires}">
+            <form id="${questionnaire}"  th:action="@{/makeQuestion}" method="post">
+            <input type="hidden" questionnaireName="id" name="questionnaireName" th:value=${questionnaire}>
+            <td th:text="${questionnaire}"></td>
+            <td><input id="submit" type="submit" value="Add Question" /><br/></td>
+            </form>
+        </tr>
+
+
+        </tbody>
+    </table>
+</div>
+</html>

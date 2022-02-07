@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<div>
+    <h2>Make a New Questionnaire</h2>
+    <div>
+        <h4><a href="/">Home Page</a></h4>
+    </div>
+    <h3>&nbsp;add questions to the <span th:text="${questionnaire}"></span></h3>
+
+    <!--<input type="hidden" id="id" name="id" th:value=${question.id}>-->
+    <form name="myForm" th:action="@{/addNewQuestionToQuestionnaire}" method="post">
+        <input type="hidden" questionnaireName="id" name="questionnaireName" th:value=${questionnaire}>
+        <label for="question">Question: </label>
+        <!--<textarea name="Text1" cols="40" rows="5"></textarea>-->
+        <input type="text" name="question" id="question" size="30" th:value="${question}" required/><br/>
+        <br/>
+        <label for="option1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1-  </label>
+        <input type="text" name="option1" id="option1" size="30" th:value="${option1}" required/><br/>
+        <br/>
+        <label for="option2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2-  </label>
+        <input type="text" name="option2" id="option2" size="30" th:value="${option2}" required/><br/>
+        <br/>
+        <label for="option3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3-  </label>
+        <input type="text" name="option3" id="option3" size="30" th:value="${option3}" required/><br/>
+        <br/>
+        <label for="option4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4-  </label>
+        <input type="text" name="option4" id="option4" size="30" th:value="${option4}" required/><br/>
+        <br/>
+        <label>Answer: &nbsp; &nbsp;</label>
+        <input type="radio" name="answer" th:value="1"> (1)&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="answer" th:value="2"> (2)&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="answer" th:value="3"> (3)&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="answer" th:value="4"> (4)&nbsp;&nbsp;&nbsp;
+        <br/>
+        <br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input id="submit" type="submit" size="80" value="Add the Question to Questionnaire" /><br/>
+    </form>
+
+</div>
+</html>

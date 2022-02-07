@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<div>
+    <h2>Make a New Questionnaire</h2>
+    <div>
+        <h4><a href="/">Home Page</a></h4>
+    </div>
+    <h3>&nbsp;<span th:text="${message}"></span></h3>
+
+    <form name="myForm" th:action="@{/CreateNewQuestionnaireInDB}" method="post">
+        <label for="questionnaireName">Name for Questionnaire: </label>
+        <input type="text" name="questionnaireName" id="questionnaireName" size="30" th:value="${questionnaireName}" required/><br/>
+        <br/>
+        <br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input id="submit" type="submit" size="80" value="Create a new Questionnaire" /><br/>
+    </form>
+
+</div>
+</html>

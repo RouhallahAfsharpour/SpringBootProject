@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<div>
+    <h2>Questionnaire Editing Mode</h2>
+    <div>
+        <h4><a href="/">Home Page</a></h4>
+    </div>
+    <h3>You are now editing the <span th:text="${questionnaire}"></span></h3>
+    <h3>Question Number <span th:text="${idQuestion}"></span> :</h3>
+
+    <form name="myForm" th:action="@{/EditThisQuestionOfQuestionnaire}" method="post">
+        <input type="hidden" id="questionnaireName" name="questionnaireName" th:value=${questionnaire}>
+        <input type="hidden" id="idOfQuestion" name="idOfQuestion" th:value=${idQuestion}>
+        <label for="question">Question: </label>
+        <!--<textarea name="Text1" cols="40" rows="5"></textarea>-->
+        <input type="text" name="question" id="question" size="30" th:value="${question}" required/><br/>
+        <br/>
+        <label for="option1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1-  </label>
+        <input type="text" name="option1" id="option1" size="30" th:value="${option1}" required/><br/>
+        <br/>
+        <label for="option2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2-  </label>
+        <input type="text" name="option2" id="option2" size="30" th:value="${option2}" required/><br/>
+        <br/>
+        <label for="option3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3-  </label>
+        <input type="text" name="option3" id="option3" size="30" th:value="${option3}" required/><br/>
+        <br/>
+        <label for="option4">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;4-  </label>
+        <input type="text" name="option4" id="option4" size="30" th:value="${option4}" required/><br/>
+        <h5>The correct answer you defined last time: <span th:text="${answer}"></span></h5>
+        <label>Confirm Answer: &nbsp; &nbsp;</label>
+        <input type="radio" name="answer" th:value="1"> (1)&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="answer" th:value="2"> (2)&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="answer" th:value="3"> (3)&nbsp;&nbsp;&nbsp;
+        <input type="radio" name="answer" th:value="4"> (4)&nbsp;&nbsp;&nbsp;
+        <br/>
+        <br/>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input id="submit" type="submit" value="Edit the Question and save the Questionnaire" /><br/>
+    </form>
+
+</div>
+</html>

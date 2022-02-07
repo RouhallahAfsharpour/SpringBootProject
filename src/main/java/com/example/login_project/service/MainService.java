@@ -31,15 +31,44 @@ public class MainService {
         return MainRepository.getAllEmployeesDB();
     }
 
-    public static List<QuestionBank> getAllQuestions() throws SQLException {
-        return MainRepository.getAllQuestions();
+    public static List<String> getAllQuestionnaireTableNames(){
+        return MainRepository.getAllQuestionnaireTableNames();
+    }
+
+    public static List<QuestionBank> getAllQuestions(String questionnaireName) throws SQLException {
+        return MainRepository.getAllQuestions(questionnaireName);
     }
     //Updated
     public static List<QuestionBank> getAllQuestionsUpdated() throws SQLException {
         return MainRepository.getAllQuestionsUpdated();
     }
+
+    public static void createNewQuestionnaireInDB(String questionnaireName) throws SQLException {
+        MainRepository.createNewQuestionnaireInDB(questionnaireName);
+    }
+
+    public static void addNewQuestion(String questionnaire,String question, String option1, String option2, String option3, String option4, String answer){
+        MainRepository.addNewQuestion(questionnaire,question,option1,option2,option3,option4,answer);
+    }
+
     public static void sendAnswer(int questionID, int ans) throws SQLException {
         MainRepository.deleteQuestion(questionID);
         MainRepository.sendAnswer(questionID,ans);
+    }
+
+    public static void deleteQuestionnaire(String questionnaire){
+        MainRepository.deleteQuestionnaire(questionnaire);
+    }
+
+    public static QuestionBank getQuestionForEdit(String questionnaireName,int questionID){
+        return MainRepository.getQuestionForEdit(questionnaireName,questionID);
+    }
+
+    public static void editThisQuestion(String questionnaire, int questionID,String question, String option1, String option2, String option3, String option4, String answer){
+        MainRepository.editThisQuestion(questionnaire,questionID,question,option1,option2,option3,option4,answer);
+    }
+
+    public static void deleteQuestionFromQuestionnaire(String questionnaireName,int questionID){
+        MainRepository.deleteQuestionFromQuestionnaire(questionnaireName,questionID);
     }
 }
