@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<html lang="en" xmlns:th="http://www.thymeleaf.org/" xmlns="http://www.w3.org/1999/html">
 <style>
       table,
       th,
@@ -15,6 +15,11 @@
         <h4><a href="/">Home Page</a></h4>
     </div>
     <h3>Number of questions:  <span th:text="${questionCount}"></span></h3>
+    <form id="addQuestion"  th:action="@{/makeQuestion}" method="post">
+        <input type="hidden" id="questionnaireName" name="questionnaireName" th:value=${questionnaireName}>
+        <td><input id="Add" type="submit" value="Add New Questions" /><br/></td>
+    </form>
+    </br>
     <table>
         <tbody>
         <tr>
