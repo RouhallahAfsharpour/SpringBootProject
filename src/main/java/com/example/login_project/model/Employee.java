@@ -6,6 +6,16 @@ public class Employee {
     private String email ="";
     private String tel ="";
     private String gender ="";
+    private String password ="";
+
+    public Employee(String firstName, String lastName, String email, String tel, String gender, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.tel = tel;
+        this.gender = gender;
+        this.password = password;
+    }
 
     public Employee(String firstName, String lastName, String gender, String email, String tel) {
         this.firstName = firstName;
@@ -36,5 +46,9 @@ public class Employee {
 
     public String getGender() {
         return gender;
+    }
+
+    public String getPassword() {
+        return password;
     }
 }

@@ -1,4 +1,6 @@
 package com.example.login_project.controller;
+import com.example.login_project.model.CityWeather;
+import com.example.login_project.model.Currency;
 import com.example.login_project.model.Employee;
 import com.example.login_project.model.QuestionBank;
 import com.example.login_project.service.MainService;
@@ -6,11 +8,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 @org.springframework.stereotype.Controller
 @RequestMapping("/")
 public class MainController {
+
+    public static List<CityWeather> weatherAppGermany = new ArrayList<>();
 
     private final MainService mainService;
 
@@ -21,6 +26,29 @@ public class MainController {
     @GetMapping("/")
     public String rootUrl(){
         return "index.html";
+    }
+
+    @GetMapping("/login")
+    public String loginPage(Model model){
+        String message = "";
+        model.addAttribute("message", message);
+        return "login.html";
+    }
+
+    @PostMapping(value = "/loginRequest")
+    public String loginRequest(@RequestParam(value = "email", required = false) String email,
+                               @RequestParam(value = "password", required = false) String pass,Model model) throws SQLException {
+        if(mainService.validateUser(email,pass)){
+            String firstName = mainService.getFirstName(email);
+            String message = "Hello "+firstName+"! ";
+            model.addAttribute("message", message);
+            return "index.html";
+        }else {
+            String message = "The information is not correct or you are not registered yet!";
+            model.addAttribute("message", message);
+            return "login.html";
+        }
+
     }
 
     @GetMapping("/RegisterNewEmployee")
@@ -79,11 +107,12 @@ public class MainController {
                                 @RequestParam(value = "lastName", required = false) String lastName,
                                 @RequestParam(value = "gender", required = false) String gender,
                                 @RequestParam(value = "email", required = false) String email,
-                                @RequestParam(value = "tel", required = false) String tel) {
+                                @RequestParam(value = "tel", required = false) String tel,
+                                 @RequestParam(value = "tel", required = false) String password) {
         if(mainService.checkEmail(email)){
             return "already_registered.html";
         }else {
-            mainService.addNewEmployee(firstName, lastName, gender, email, tel);
+            mainService.addNewEmployee(firstName, lastName, gender, email, tel,password);
             return "register_employee.html";
         }
     }
@@ -236,6 +265,88 @@ public class MainController {
         return "edit_questions.html";
     }
 
+    @GetMapping("/calculateFromUSD")
+    public String calculateFromUSD(Model model){
+        Double convertedFromUSD = 0.0;
+        model.addAttribute("convertedFromUSD", convertedFromUSD);
+        return "currency_from_USD.html";
+    }
+
+
+    @PostMapping(value = "/calculateFromUSD")
+    public String createEmployee(@RequestParam(value = "amount", required = false) Double amount,
+                                 @RequestParam(value = "currency", required = false) String currency, Model model) throws ExecutionException, InterruptedException {
+        Double convertedFromUSD = mainService.calculateFromUSD(amount,currency);
+        model.addAttribute("convertedFromUSD", convertedFromUSD);
+        model.addAttribute("amountConverted", amount);
+        model.addAttribute("currencyConverted", " "+currency);
+        model.addAttribute("currencyFrom", " USD equals to: ");
+        return "currency_from_USD.html";
+    }
+
+
+    @GetMapping("/currencyConverter")
+    public String currencyConverter(Model model) throws ExecutionException, InterruptedException {
+        Double currencyConverterAmount = 0.0;
+        List<Currency> allCurrencies = mainService.allCurrencies();
+        model.addAttribute("allCurrencies", allCurrencies);
+        model.addAttribute("currencyConverterAmount", currencyConverterAmount);
+        return "currency_converter.html";
+    }
+
+    @PostMapping(value = "/convertCurrency")
+    public String convertCurrency(@RequestParam(value = "amount", required = false) Double amount,
+                                  @RequestParam(value = "currencyFrom", required = false) String currencyFrom,
+                                 @RequestParam(value = "currencyTo", required = false) String currencyTo, Model model) throws ExecutionException, InterruptedException {
+        Double convertedResult = mainService.convertCurrency(amount,currencyFrom,currencyTo);
+        model.addAttribute("convertedResult", convertedResult);
+        model.addAttribute("amountConverted", amount);
+        model.addAttribute("currencyConverted", " "+currencyTo);
+        model.addAttribute("currencyFrom", currencyFrom+" equals to: ");
+        List<Currency> allCurrencies = mainService.allCurrencies();
+        model.addAttribute("allCurrencies", allCurrencies);
+        return "currency_converter.html";
+    }
+
+    @RequestMapping(value = "/weatherAppGermany", method = RequestMethod.GET)
+    public String weatherAppGermany(Model model) throws ExecutionException, InterruptedException {
+        weatherAppGermany = mainService.weatherAppGermany();
+        model.addAttribute("weatherGermany", weatherAppGermany);
+        model.addAttribute("numberOfCities", weatherAppGermany.size());
+        return "weather_Germany.html";
+    }
+
+    @RequestMapping(value = "/sortTemperatureGermanyUp", method = RequestMethod.GET)
+    public String sortTemperatureGermanyUp(Model model) throws ExecutionException, InterruptedException {
+        Collections.sort(weatherAppGermany, Comparator.comparing(CityWeather::getCurrentTemp));
+        model.addAttribute("weatherGermany", weatherAppGermany);
+        model.addAttribute("numberOfCities", weatherAppGermany.size());
+        return "weather_Germany.html";
+    }
+
+    @RequestMapping(value = "/sortTemperatureGermanyDown", method = RequestMethod.GET)
+    public String sortTemperatureGermanyDown(Model model) throws ExecutionException, InterruptedException {
+        Collections.sort(weatherAppGermany, Comparator.comparing(CityWeather::getCurrentTemp).reversed());
+        model.addAttribute("weatherGermany", weatherAppGermany);
+        model.addAttribute("numberOfCities", weatherAppGermany.size());
+        return "weather_Germany.html";
+    }
+
+    @RequestMapping(value = "/sortCityNameGermanyUp", method = RequestMethod.GET)
+    public String sortCityNameGermanyUp(Model model) throws ExecutionException, InterruptedException {
+        Collections.sort(weatherAppGermany, Comparator.comparing(CityWeather::getCityName));
+        model.addAttribute("weatherGermany", weatherAppGermany);
+        model.addAttribute("numberOfCities", weatherAppGermany.size());
+        return "weather_Germany.html";
+    }
+
+    @RequestMapping(value = "/sortCityNameGermanyDown", method = RequestMethod.GET)
+    public String sortCityNameGermanyDown(Model model) throws ExecutionException, InterruptedException {
+        Collections.sort(weatherAppGermany, Comparator.comparing(CityWeather::getCityName).reversed());
+        model.addAttribute("weatherGermany", weatherAppGermany);
+        model.addAttribute("numberOfCities", weatherAppGermany.size());
+        return "weather_Germany.html";
+    }
 
 }
 

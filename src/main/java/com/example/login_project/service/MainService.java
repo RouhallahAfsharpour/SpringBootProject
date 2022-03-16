@@ -1,12 +1,16 @@
 package com.example.login_project.service;
 
+import com.example.login_project.model.CityWeather;
+import com.example.login_project.model.Currency;
 import com.example.login_project.model.Employee;
 import com.example.login_project.model.QuestionBank;
 import com.example.login_project.repository.MainRepository;
+import com.sun.tools.javac.Main;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @org.springframework.stereotype.Service
 public class MainService {
@@ -15,8 +19,24 @@ public class MainService {
         return MainRepository.checkEmail(email);
     }
 
-    public static void addNewEmployee(String firstName, String lastName, String gender, String email, String tel){
-        MainRepository.addEmployee(firstName, lastName, gender, email, tel);
+    public static String getFirstName(String email){
+        return MainRepository.getFirstName(email);
+    }
+
+    public static boolean validateUser(String email,String pass){
+        boolean check=false;
+        if(checkEmail(email)){
+            if (MainRepository.checkPass(email,pass)){
+                check= true;
+            }
+        }else {
+            check= false;
+        }
+        return check;
+    }
+
+    public static void addNewEmployee(String firstName, String lastName, String gender, String email, String tel, String password){
+        MainRepository.addEmployee(firstName, lastName, gender, email, tel, password);
     }
 
     public static void deleteEmployee(String email){
@@ -70,5 +90,21 @@ public class MainService {
 
     public static void deleteQuestionFromQuestionnaire(String questionnaireName,int questionID){
         MainRepository.deleteQuestionFromQuestionnaire(questionnaireName,questionID);
+    }
+
+    public static Double calculateFromUSD(Double amount,String currencyName) throws ExecutionException, InterruptedException {
+        return MainRepository.calculateFromUSD(amount,currencyName);
+    }
+
+    public static Double convertCurrency(Double amount,String currencyFrom,String currencyTo) throws ExecutionException, InterruptedException {
+        return MainRepository.convertCurrency(amount,currencyFrom,currencyTo);
+    }
+
+    public static List<Currency> allCurrencies() throws ExecutionException, InterruptedException {
+        return MainRepository.allCurrencies();
+    }
+
+    public static List<CityWeather> weatherAppGermany() throws ExecutionException, InterruptedException {
+        return MainRepository.weatherAppGermany();
     }
 }

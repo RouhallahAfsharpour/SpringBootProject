@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<div>
+    <h2><span></span>Welcome to USD Currency Converter</h2>
+    <div>
+        <form name="myForm" th:action="@{/calculateFromUSD}" method="post">
+            <label for="amount">amount USD: </label>
+            <input type="text" name="amount" id="amount" size="10" th:value="${amount}" required/><br/>
+            <br/>
+            <label for="currency">currency:  </label>
+            <input type="text" name="currency" id="currency" size="10" th:value="${currency}" required/><br/>
+            <br/>
+            <input id="convert" type="submit" size="20" value="convert" /><br/>
+        </form>
+        <h3>Result: <span th:text="${amountConverted}"></span><span th:text="${currencyFrom}"></span><span th:text="${convertedFromUSD}">  </span><span th:text="${currencyConverted}"></span></h3>
+    </div>
+</div>
+</html>

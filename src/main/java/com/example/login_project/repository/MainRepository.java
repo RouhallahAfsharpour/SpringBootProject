@@ -1,39 +1,117 @@
 package com.example.login_project.repository;
+import com.example.login_project.model.CityWeather;
+import com.example.login_project.model.Currency;
 import com.example.login_project.model.Employee;
 import com.example.login_project.model.QuestionBank;
 
+import com.google.gson.Gson;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.w3c.dom.DOMImplementation;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class MainRepository {
+
+    @Configuration
+    public class AppConfig {
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+            return new BCryptPasswordEncoder();
+        }
+    }
+
     public static List<Employee> allEmployees = new ArrayList<>();
     public static List<Employee> allEmployeesDB = new ArrayList<>();
     public static List<QuestionBank> allQuestions = new ArrayList<>();
     public static List<String> QuestionnaireTableNames = new ArrayList<>();
+    public static BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
+
+    //PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     public static String jdbcURL = "jdbc:mysql://localhost:3306/employees";
     public static String jdbcURLQuestionnaires = "jdbc:mysql://localhost:3306/questionnaires";
     public static String username = "root";
     public static String password = "1234";
 
 
-    public static void addEmployee(String firstName, String lastName, String gender, String email, String tel){
-        allEmployees.add(new Employee(firstName, lastName, gender, email, tel));
+    public static void addEmployee(String firstName, String lastName, String gender, String email, String tel, String pass){
+
+        Pbkdf2PasswordEncoder passwordEncoder = new Pbkdf2PasswordEncoder();
+        String encodedPassword =passwordEncoder.encode(pass);
+        System.out.println(encodedPassword);
+
+        allEmployees.add(new Employee(firstName, lastName, gender, email, tel, encodedPassword));
 
         try(Connection connection = DriverManager.getConnection(jdbcURL,username,password);
             Statement stmt = connection.createStatement();
         ) {
-            PreparedStatement ps = connection.prepareStatement("INSERT INTO workers(first_name, last_name, gender, email, telephone)values(?,?,?,?,?);");
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO workers(first_name, last_name, gender, email, telephone, password)values(?,?,?,?,?,?);");
             ps.setString(1,firstName);
             ps.setString(2,lastName);
             ps.setString(3,gender);
             ps.setString(4,email);
             ps.setString(5,tel);
+            ps.setString(6,encodedPassword);
             ps.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static String getFirstName(String email){
+        String firstName="";
+        try(Connection connection = DriverManager.getConnection(jdbcURL,username,password);
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT first_name FROM workers WHERE email= '"+email+"'");
+        ) {
+            while(rs.next()){
+                firstName= rs.getString("first_name");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return firstName;
+    }
+
+    public static boolean checkPass(String email,String pass){
+        Pbkdf2PasswordEncoder passwordEncoder = new Pbkdf2PasswordEncoder();
+        String encodedPassword ="3768a96ed94ad1deeebf9ffd36560ab080dc5f6e4eba3076aed806002094bcc570ec37eafaec3b07";
+        boolean check =false;
+        String sql ="SELECT password FROM workers WHERE email= '"+email+"'";
+
+        try(Connection connection = DriverManager.getConnection(jdbcURL,username,password);
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+        ) {
+            while(rs.next()){
+                //if(passwordEncoder.matches(pass,rs.getString("password"))){
+                if(passwordEncoder.matches(pass,encodedPassword)){
+                    System.out.println("correct pass");
+                    check=true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return check;
     }
 
     //deleteUser
@@ -282,5 +360,129 @@ public class MainRepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+
+    public static Double calculateFromUSD(Double amount, String currencyName) throws ExecutionException, InterruptedException {
+
+        //1- Create HttpClient object
+        HttpClient client = HttpClient.newHttpClient();
+        //2- Build HttpRequest
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .uri(
+                        URI
+                                .create("https://api.currencyapi.com/v3/latest?apikey=9zFynTI1VtNgjXacCju0ilK9T9uyg7r7uWnsY5wf")
+                ).GET()//the HTTP request method
+                .build();//building the request object
+        // then we can send this request using our client, and we wanted to send asynchronously
+
+        CompletableFuture<Object> response = client.sendAsync(
+                        //pass the request object as the first parameter
+                        request,//our HttpRequest instance
+                        HttpResponse.BodyHandlers.ofString()
+                )
+                //the second parameter tells the server which response body type(as string) we want to receive
+                .thenApply(HttpResponse::body);
+
+        String keys= response.get().toString();
+        System.out.println(keys);
+        HashMap<String, Map<String, Map<String, Double>>> map = new Gson().fromJson(keys, HashMap.class);
+        System.out.println(map.get("data").keySet());
+
+
+        System.out.println(map.get("data").get(currencyName));
+        System.out.println(map.get("data").get(currencyName).get("value"));
+        System.out.println(amount*map.get("data").get(currencyName).get("value"));
+        return amount*map.get("data").get(currencyName).get("value");
+    }
+
+    public static List<Currency> allCurrencies() throws ExecutionException, InterruptedException {
+        //1- Create HttpClient object
+        HttpClient client = HttpClient.newHttpClient();
+        //2- Build HttpRequest
+        HttpRequest request = HttpRequest
+                .newBuilder()
+                .uri(
+                        URI
+                                .create("https://api.currencyapi.com/v3/latest?apikey=9zFynTI1VtNgjXacCju0ilK9T9uyg7r7uWnsY5wf")
+                ).GET()//the HTTP request method
+                .build();//building the request object
+        // then we can send this request using our client, and we wanted to send asynchronously
+
+        CompletableFuture<Object> response = client.sendAsync(
+                        //pass the request object as the first parameter
+                        request,//our HttpRequest instance
+                        HttpResponse.BodyHandlers.ofString()
+                )
+                //the second parameter tells the server which response body type(as string) we want to receive
+                .thenApply(HttpResponse::body);
+
+        String keys= response.get().toString();
+        System.out.println(keys);
+        HashMap<String, Map<String, Map<String, Double>>> map = new Gson().fromJson(keys, HashMap.class);
+
+        List<Currency> allCurrencies = new ArrayList<>();
+        for(String key : map.get("data").keySet()){
+            allCurrencies.add(new Currency(key,map.get("data").get(key).get("value")));
+        }
+
+        return allCurrencies;
+    }
+
+    public static Double convertCurrency(Double amount,String currencyFrom,String currencyTo) throws ExecutionException, InterruptedException {
+        List<Currency> allCurrencies =allCurrencies();
+        Double exchangeRateFrom =1.0;
+        Double exchangeRateTo =1.0;
+
+        for (Currency c : allCurrencies){
+            if (c.getCurrencyName().equals(currencyFrom)){
+                exchangeRateFrom =c.getExchangeRate();
+            }
+            if (c.getCurrencyName().equals(currencyTo)){
+                exchangeRateTo =c.getExchangeRate();
+            }
+        }
+
+        return Math.round(((amount/exchangeRateFrom)*exchangeRateTo)*100.0)/100.0;
+    }
+
+
+    public static List<CityWeather> weatherAppGermany() throws ExecutionException, InterruptedException {
+
+        String[] cityNamesGermany = {"Berlin","Hamburg","Munich","Cologne","Frankfurt","Stuttgart","Düsseldorf","Dortmund","Essen",
+                "Leipzig","Bremen","Dresden","Hanover","Nuremberg","Duisburg","Bochum","Wuppertal","Bielefeld","Bonn","Münster",
+                "Karlsruhe","Mannheim","Augsburg","Wiesbaden","Mönchengladbach","Gelsenkirchen","Braunschweig","Kiel","Chemnitz",
+                "Aachen","Halle","Mainz","Erfurt","Oberhausen","Rostock","Freiburg","Magdeburg",
+                "Kassel","Hagen","Saarbrücken","Hamm","Potsdam","Mülheim","Ludwigshafen","Oldenburg","Osnabrück","Leverkusen",
+                "Heidelberg","Solingen","Darmstadt","Herne","Neuss","Regensburg","Paderborn","Ingolstadt",
+                "Würzburg","Fürth","Ulm","Heilbronn","Pforzheim","Wolfsburg","Göttingen","Bottrop","Reutlingen","Koblenz",
+                "Recklinghausen","Bremerhaven","Jena","Erlangen","Remscheid","Trier","Salzgitter","Moers",
+                "Siegen","Hildesheim","Cottbus"};
+
+        List<CityWeather> cityWeatherList = new ArrayList<>();
+
+        for (String city : cityNamesGermany){
+
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest
+                    .newBuilder()
+                    .uri(URI.create("http://api.weatherapi.com/v1/current.json?key=f7d89f3d5a3d4f5999381115221603&q=" + city)
+                    ).GET().build();
+
+            client.sendAsync(request,HttpResponse.BodyHandlers.ofString())
+                    .thenApply(HttpResponse::body)
+                    .join();
+
+            CompletableFuture<Object> response = client.sendAsync(request,HttpResponse.BodyHandlers.ofString())
+                    .thenApply(HttpResponse::body);
+
+            String keys= response.get().toString().replace("[","");
+            HashMap<String, Map<String, Object>> map = new Gson().fromJson(keys, HashMap.class);
+            cityWeatherList.add(new CityWeather(city,new Double(map.get("current").get("temp_c").toString()),new Double(map.get("current").get("humidity").toString()),
+                    map.get("current").get("condition").toString().split(",")[0].substring(6)));
+        }
+
+        return cityWeatherList;
     }
 }

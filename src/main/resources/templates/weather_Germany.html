@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<style>
+      table,
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+  </style>
+<div>
+    <h2>Weather Application - German Cities</h2>
+    <div>
+        <h4><a href="/">Home Page</a></h4>
+    </div>
+    <h3>Number of cities:  <span th:text="'(Count: ' + ${numberOfCities} + ')'"></span></h3>
+    <table>
+        <tbody>
+        <tr>
+            <td>City &nbsp;<a th:text="'↑'" th:href="@{/sortCityNameGermanyUp}"></a>&nbsp;&nbsp;<a th:text="'↓'" th:href="@{/sortCityNameGermanyDown}"></a></td>
+            <td>Temperature &nbsp;<a th:text="'↑'" th:href="@{/sortTemperatureGermanyUp}"></a>&nbsp;&nbsp;<a th:text="'↓'" th:href="@{/sortTemperatureGermanyDown}"></a></td>
+            <td>Humidity</td>
+            <td>Condition</td>
+        </tr>
+        <tr th:each="weather : ${weatherGermany}">
+            <td th:text="${weather.cityName}"></td>
+            <td th:text="${weather.currentTemp}"></td>
+            <td th:text="${weather.humidity}"></td>
+            <td th:text="${weather.condition}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</html>
